@@ -74,13 +74,13 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
+	'dsn'	=> 'mysql:host=39.108.209.174;dbname=pinquduo',
+	'hostname' => '',
+	'username' => 'root',
+	'password' => 'Root',
 	'database' => '',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
+	'dbdriver' => 'pdo',
+	'dbprefix' => 'tp_',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
