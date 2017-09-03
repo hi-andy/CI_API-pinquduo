@@ -5,4 +5,24 @@ class MY_Controller extends CI_Controller {
 
 		// 统一入口控制代码 Donghu
 	}
+
+    /**
+     * 客户端返回成功
+     *
+     * @param array $data
+     */
+	protected function success(Array $data=array(), $msg='获取成功')
+    {
+        echo json_encode(array('status'=>'1', 'msg'=>$msg,'result'=>$data));
+        exit;
+    }
+
+    /**
+     * 客户端返回失败
+     */
+    protected function failed($msg='获取失败')
+    {
+        echo json_encode(array('status'=>'-1', 'msg'=>$msg));
+        exit;
+    }
 }
