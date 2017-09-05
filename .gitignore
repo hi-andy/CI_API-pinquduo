@@ -20,6 +20,9 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 #-------------------------
 /nbproject/
 .idea/*
+./CI_phpStorm.php
+./my_models.php
+./DB_active_rec.php
 
 ## Sublime Text cache files
 *.tmlanguage.cache
