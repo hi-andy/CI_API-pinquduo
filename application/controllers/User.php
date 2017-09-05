@@ -25,17 +25,9 @@ class User extends MY_Controller
     /**
      * 订单
      */
-    public function order()
+    public function orderLists()
     {
-
-    }
-
-    /**
-     * 优惠券
-     */
-    public function coupons()
-    {
-
+        $status = $this->input->get('status');
     }
 
     /**
@@ -51,31 +43,6 @@ class User extends MY_Controller
      */
     public function groupBuy()
     {
-
-    }
-
-    /**
-     * 收货地址列表
-     */
-//    public function address()
-//    {
-//        $user_id = $this->input->get('user_id');
-//        $address= new Address();
-//        $address->lists($user_id);
-//    }
-
-    /**
-     * 商品收藏
-     */
-    public function collects()
-    {
-        $user_id = $this->input->get('user_id');
-        $data = $this->db->select()->get_where('goods_collect', array('user_id' => $user_id));
-        if (!empty($data->result_array())) {
-            $this->success($data);
-        } else {
-            $this->failed();
-        }
 
     }
 

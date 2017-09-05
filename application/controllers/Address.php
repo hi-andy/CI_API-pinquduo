@@ -26,7 +26,7 @@ class Address extends MY_Controller
                                 ->get_where('user_address', array('user_id' => $id))
                                 ->result_array();
         if (!empty($address)) {
-            $this->success($address);
+            $this->success('获取成功', $address);
         } else {
             $this->failed();
         }
