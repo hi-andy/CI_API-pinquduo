@@ -1,5 +1,7 @@
 <?php
 /**
+ * 地址管理控制器
+ *
  * Created by PhpStorm.
  * User: Hua
  * Date: 2017/9/3
@@ -20,8 +22,10 @@ class Address extends MY_Controller
     public function lists()
     {
         $id         = $this->input->get('user_id');
-        $address    = $this->db->select('consignee,mobile,address_base,address,is_default')->get_where('user_address', array('user_id' => $id));
-        if (!empty($address->result_array())) {
+        $address    = $this->db->select('consignee,mobile,address_base,address,is_default')
+                                ->get_where('user_address', array('user_id' => $id))
+                                ->result_array();
+        if (!empty($address)) {
             $this->success($address);
         } else {
             $this->failed();
@@ -50,7 +54,7 @@ class Address extends MY_Controller
         );
 
         if ($this->db->insert('user_address', $data)) {
-            $this->success();
+            $this->success('收货地址添加成功');
         } else {
             $this->failed('收货地址添加失败');
         }
@@ -76,9 +80,9 @@ class Address extends MY_Controller
         );
 
         if ($this->db->where(array('address_id'=>$id))->update('user_address', $data)) {
-            $this->success();
+            $this->success('收货地址修改成功');
         } else {
-            $this->failed();
+            $this->failed('收货地址修改失败');
         }
     }
 
@@ -89,6 +93,6 @@ class Address extends MY_Controller
     {
         $id = $this->input->get('address_id');
         $this->db->delete('user_address', array('address_id' => $id));
-        $this->success();
+        $this->success('收货地址删除成功');
     }
 }

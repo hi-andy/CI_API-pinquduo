@@ -11,7 +11,7 @@ class MY_Controller extends CI_Controller {
      *
      * @param array $data
      */
-	protected function success(Array $data=array(), $msg='获取成功')
+	protected function success($msg='获取成功', Array $data=array())
     {
         echo json_encode(array('status'=>'1', 'msg'=>$msg,'result'=>$data));
         exit;
