@@ -31,3 +31,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+/CI_phpStorm.php
+/DB_active_rec.php
+/my_models.php
+/.idea/
+/application/storage/
