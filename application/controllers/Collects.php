@@ -71,7 +71,7 @@ class Collects extends MY_Controller
         );
 
         if ($this->db->insert('goods_collect', $data)) {
-            $this->success('', '商品收藏成功');
+            $this->success();
         } else {
             $this->failed('商品收藏失败');
         }
@@ -85,7 +85,7 @@ class Collects extends MY_Controller
         $user_id    = $this->input->get('user_id');
         $goods_id   = $this->input->get('goods_id');
         $this->db->delete('goods_collect', array('goods_id' => $goods_id, 'user_id'=>$user_id));
-        $this->success('取消收藏成功');
+        $this->success();
     }
 
 }

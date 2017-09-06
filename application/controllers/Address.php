@@ -26,7 +26,7 @@ class Address extends MY_Controller
                                 ->get_where('user_address', array('user_id' => $id))
                                 ->result_array();
         if (!empty($address)) {
-            $this->success('获取成功', $address);
+            $this->success($address);
         } else {
             $this->failed();
         }
@@ -54,7 +54,7 @@ class Address extends MY_Controller
         );
 
         if ($this->db->insert('user_address', $data)) {
-            $this->success('收货地址添加成功');
+            $this->success();
         } else {
             $this->failed('收货地址添加失败');
         }
@@ -80,7 +80,7 @@ class Address extends MY_Controller
         );
 
         if ($this->db->where(array('address_id'=>$id))->update('user_address', $data)) {
-            $this->success('收货地址修改成功');
+            $this->success();
         } else {
             $this->failed('收货地址修改失败');
         }
@@ -93,6 +93,6 @@ class Address extends MY_Controller
     {
         $id = $this->input->get('address_id');
         $this->db->delete('user_address', array('address_id' => $id));
-        $this->success('收货地址删除成功');
+        $this->success();
     }
 }

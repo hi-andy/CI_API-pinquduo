@@ -20,7 +20,7 @@ class Coupons extends MY_Controller
      */
     public function lists()
     {
-        $store_id   = $this->input->get('store_id'); // 店铺ID/商家ID
+        $store_id   = $this->input->get('store_id'); // 店铺/商家ID
         $coupons    = $this->db->select('id,
                                         name,
                                         type,
@@ -40,7 +40,7 @@ class Coupons extends MY_Controller
                                 ->get()
                                 ->result_array();
         if (!empty($coupons)) {
-            $this->success('获取成功', $coupons);
+            $this->success( $coupons);
         } else {
             $this->failed();
         }
@@ -49,7 +49,7 @@ class Coupons extends MY_Controller
     /**
      * 领取优惠券
      */
-    public function getCoupon()
+    public function get_coupon()
     {
         $user_id    = $this->input->get('user_id');
         $coupon_id  = $this->input->get('coupon_id');
@@ -62,7 +62,7 @@ class Coupons extends MY_Controller
         if ($coupon_info['limit_take'] > 0) {
             $get_num = $this->db->where('cid=' . $coupon_id . ' AND uid=' . $user_id)->count_all_results('coupon_list');
             if ($get_num >= $coupon_info['limit_take']) {
-                $this->failed('领取失败，不能超出领取限制！');
+                $this->failed('领取失败，您已领取过此优惠券！');
             }
         }
 
@@ -81,7 +81,7 @@ class Coupons extends MY_Controller
 
         if ($this->db->trans_status() !== FALSE) {
             $this->db->trans_commit();
-            $this->success('领取成功！');
+            $this->success();
         } else {
             $this->db->trans_rollback();
             $this->failed('领取失败！');
@@ -91,31 +91,59 @@ class Coupons extends MY_Controller
     /**
      * 我的优惠券：用户优惠券列表
      */
-    public function userLists()
+    public function user_lists()
     {
         $user_id = $this->input->get('user_id');
-        $coupons    = $this->db->select("
-                                        c.id,
-                                        c.name,
-                                        c.type,
-                                        c.money,
-                                        c.condition,
-                                        c.use_start_time,
-                                        c.use_end_time,
-                                        c.store_id,
-                                        (select store_name from tp_merchant where id=c.store_id) as store_name,
-                                        cl.is_use,
-                                        cl.uid,
-                                        cl.id user_coupon_id
-                                        ")
-            ->from('coupon_list cl')
-            ->join('coupon c', 'cl.cid = c.id', 'inner')
-            ->where(array('cl.uid'=>$user_id))
-            ->get()
-            ->result_array();
 
-        if (!empty($coupons)) {
-            $this->success('获取成功', $coupons);
+        /**
+         * 获取用户领取的优惠券数据
+         */
+        $coupon_list    = $this->db->select("
+                                        is_use,
+                                        uid,
+                                        id user_coupon_id,
+                                        cid,
+                                        store_id,
+                                        (select store_name from tp_merchant where id=store_id) as store_name
+                                        ")
+                                ->where(array('uid'=>$user_id))
+                                ->get('coupon_list')
+                                ->result_array();
+        /**
+         * 拼接处理优惠券 ID
+         */
+        $cids = '';
+        foreach ($coupon_list as $subArr) {
+            $cids .= $subArr['cid'] . ',';
+        }
+        $cids = rtrim($cids, ',');
+
+        /**
+         * 获取优惠券详细信息
+         */
+        $coupons = $this->db->select('id, name, type, money, condition, use_start_time, use_end_time')
+                            ->where('id in (' . $cids . ')')
+                            ->get('coupon')
+                            ->result_array();
+
+        /**
+         * 合并数据
+         */
+        for ($i=0; $i<count($coupon_list); $i++) {
+            for ($j=0; $j<count($coupons); $j++) {
+                if ($coupon_list[$i]['cid'] == $coupons[$j]['id']) {
+                    $coupon_list[$i]['name'] = $coupons[$j]['name'];
+                    $coupon_list[$i]['type'] = $coupons[$j]['type'];
+                    $coupon_list[$i]['money'] = $coupons[$j]['money'];
+                    $coupon_list[$i]['condition'] = $coupons[$j]['condition'];
+                    $coupon_list[$i]['use_start_time'] = $coupons[$j]['use_start_time'];
+                    $coupon_list[$i]['use_end_time'] = $coupons[$j]['use_end_time'];
+                }
+            }
+        }
+
+        if (!empty($coupon_list)) {
+            $this->success($coupon_list);
         } else {
             $this->failed();
         }
@@ -127,7 +155,7 @@ class Coupons extends MY_Controller
      * 更新用户优惠券表 coupon_list：is_use
      * 更新优惠券表 coupon : use_num
      */
-    public function useCoupon()
+    public function use_coupon()
     {
         $user_id        = $this->input->get('user_id');
         $user_coupon_id = $this->input->get('user_coupon_id');
@@ -158,6 +186,6 @@ class Coupons extends MY_Controller
         $id = $this->input->get('id'); // 优惠券 ID
         $user_id = $this->input->get('user_id');
         $this->db->delete('coupon_list', array('id'=>$id, 'uid'=>$user_id));
-        $this->success('优惠券删除成功');
+        $this->success();
     }
 }
