@@ -20,9 +20,9 @@ class MY_Controller extends CI_Controller {
      *
      * @param array $data
      */
-	protected function success($msg='获取成功', Array $data=array())
+	protected function success(Array $data=array())
     {
-        echo json_encode(array('status'=>'1', 'msg'=>$msg,'result'=>$data));
+        echo json_encode(array('status'=>'1','result'=>$data));
         exit;
     }
 
@@ -34,4 +34,34 @@ class MY_Controller extends CI_Controller {
         echo json_encode(array('status'=>'-1', 'msg'=>$msg));
         exit;
     }
+
+	/**
+	 * 数据分页处理模型
+	 * @param int $total
+	 * @param array $items
+	 * @return array
+	 * author Fox
+	 */
+	function listPageData($total=0,$items=array(),$pagesize=null) {
+		if(empty($pagesize)){
+			$pagesize = (int)$this->input->get_post('pagesize');
+		}
+		$totalpage = ceil($total/$pagesize);
+		$currentpage = (int)$this->input->get_post('page');
+		if( $currentpage==0){
+			$currentpage = 1;
+		}
+		if(empty($items))
+		{
+			$items=array();
+		}
+		if(empty($total))
+		{
+			$total = 0;
+		}
+		$currentpage = max(1, $currentpage);
+		$currentpage = min($currentpage, $totalpage);
+		$nextpage = min($currentpage+1, $totalpage);
+		return  compact('total', 'totalpage', 'pagesize', 'currentpage', 'nextpage', 'items');
+	}
 }
