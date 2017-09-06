@@ -62,6 +62,9 @@ class Notify extends MY_Controller
      * 微信支付通知地址 TODO 伪代码
      */
     public function wechatPayNotify(){
+        $this->load->library('alipay');
+        $res=$this->alipay->purchase();
+        var_dump($res);die();
         $wxConfig=$this->config->item('wx_js_pay');
         $options = [
             'app_id' => $wxConfig['app_id'],
