@@ -325,4 +325,24 @@ class CI_Cache_redis extends CI_Driver
 			$this->_redis->close();
 		}
 	}
+
+    /**
+     * 通配符查找keys
+     *
+     * @param $keys
+     * @return array
+     */
+    public function keys($keys){
+	    return $this->_redis->keys($keys);
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param $keys
+     * @return int
+     */
+    public function del($keys){
+        return $this->_redis->del($keys);
+    }
 }

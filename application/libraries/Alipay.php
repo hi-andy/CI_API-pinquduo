@@ -1,5 +1,6 @@
 <?php
 /**
+ * 支付宝支付类
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2017/9/5
@@ -28,10 +29,10 @@ class Alipay
      */
     public function __construct()
     {
-        $this->app = & get_instance();
+        $this->app = &get_instance();
         //读取支付宝配置
         $this->app->config->load('pay_settings');
-        $this->alipay_config=$this->app->config->item('alipay_config');
+        $this->alipay_config = $this->app->config->item('alipay_config');
     }
 
 
@@ -42,7 +43,8 @@ class Alipay
      * @param $refundFee
      * @return array
      */
-    public function aliRefund($orderNo,$totalFee,$refundFee){
+    public function aliRefund($orderNo, $totalFee, $refundFee)
+    {
         //网关初始化
         $gateway = Omnipay::create('Alipay_AopApp');
         $gateway->setSignType($this->alipay_config['sign_type']); //RSA/RSA2
@@ -53,25 +55,27 @@ class Alipay
         //发起请求
         $request = $gateway->refund();
         $request->setBizContent([
-            'out_trade_no' =>strval($orderNo),
+            'out_trade_no' => strval($orderNo),
             'trade_no' => '',
             'refund_amount' => $refundFee,
-            'out_request_no' => strval($orderNo).'0001'
+            'out_request_no' => strval($orderNo) . '0001'
         ]);
-        $response=$request->send();
-        $data=$response->getData()['alipay_trade_refund_response'];
-        if($data['code']==1000){
-            return ['status'=>1,'msg'=>'操作成功'];
-        }else{
-            return ['status'=>0,'msg'=>$data['msg']];
+        $response = $request->send();
+        $data = $response->getData()['alipay_trade_refund_response'];
+        if ($data['code'] == 1000) {
+            return ['status' => 1, 'msg' => '操作成功'];
+        } else {
+            return ['status' => 0, 'msg' => $data['msg']];
         }
     }
 
     /**
-     * APP创建订单 TODO 需要完善参数
+     * APP创建订单 TODO 需要完善ORDER参数
+     * @param array $order
      * @return mixed
      */
-    public function purchase(){
+    public function purchase(array $order=[])
+    {
         $gateway = Omnipay::create('Alipay_AopApp');
         $gateway->setSignType($this->alipay_config['sign_type']); //RSA/RSA2
         $gateway->setAppId($this->alipay_config['partner']);
@@ -80,7 +84,7 @@ class Alipay
         $gateway->setNotifyUrl($this->alipay_config['notify_url']);
         $request = $gateway->purchase();
         $request->setBizContent([
-            'subject'      => 'test',
+            'subject' => 'test',
             'out_trade_no' => date('YmdHis') . mt_rand(1000, 9999),
             'total_amount' => '0.01',
             'product_code' => 'QUICK_MSECURITY_PAY',
