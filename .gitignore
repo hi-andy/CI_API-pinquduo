@@ -36,3 +36,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /my_models.php
 /.idea/
 /application/storage/
+
+# session
+ci_session*
