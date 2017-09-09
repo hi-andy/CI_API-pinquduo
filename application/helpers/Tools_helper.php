@@ -2,13 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: Hua
- * Date: 2017/9/7
- * Time: 15:56
+ * Date: 2017/9/9
+ * Time: 09:42
  */
-
-defined('BASEPATH') OR exit('No direct script access allowed');
-
-
 
 if ( ! function_exists('check_mobile')) {
 

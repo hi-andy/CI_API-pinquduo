@@ -18,6 +18,7 @@ class SMS
      */
     public function sendSMS($mobile, $ctype, $content, $TemplateCode, $SmsType, $SignName, $product)
     {
+        require_once (dirname(dirname(__FILE__)) . '/libraries/taobao-sdk/TopSdk.php');
         $c = new TopClient();
         $c->appkey = self::APPKEY;
         $c->secretKey = self::SECRETKEY;

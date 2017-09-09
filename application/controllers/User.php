@@ -72,6 +72,7 @@ class User extends MY_Controller
     public function get_code()
     {
         $mobile = $this->input->get('mobile');
+        $this->load->helper('Tools_helper');
         if (!check_mobile($mobile)) $this->failed('手机号码格式有误');
 
         /**
@@ -85,6 +86,7 @@ class User extends MY_Controller
 
         if ( time() - $verify_data['time'] > 60) {
             $code = rand(1000, 9999);
+            $this->load->library('../controllers/SMS');
             $result = (new SMS())->sendSMS($mobile, "code", $code, "SMS_62265047", "normal", "登录验证", "拼趣多");
         }
 
@@ -120,10 +122,12 @@ class User extends MY_Controller
         $this->load->library('session');
         $session_data = $this->session->userdata($session_key);
 
+
         $verify_data = unserialize($session_data);
         if (!($mobile == $verify_data['mobile'] && $code == $verify_data['code'])) {
             $this->failed('手机号与验证码不匹配');
         }
+
 
 
         $userInfo = $this->db->select('user_id,mobile,head_pic')->get_where('users', array('mobile' => $mobile))->row_array();
@@ -156,7 +160,12 @@ class User extends MY_Controller
          * 获取用户最近订单状态
          */
         $this->load->model('order_model');
-        $userInfo['userdetails'] = $this->order_model->user_order_summary($user_id);
+        $userInfo['userdetails'] = $this->order_model->user_order_summary($userInfo['user_id']);
+
+        /**
+         * 删除 session
+         */
+        $this->session->unset_userdata($session_key);
 
         $this->success($userInfo);
     }
